@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Etusivu</title>
+</head>
+
+<body>
+    <p>
+        <a href="/new">Luo ilmoitus</a>
+    </p>
+    <p>
+        Ilmoituksia: {{ count }}
+    </p>
+    <hr/>
+    <table>
+    <thead>
+        <tr>
+            <td>Ilmoittaja</td>
+            <td>Lainattava asia</td>
+        </tr>
+    </thead>
+    {% for post in posts %}
+        <tr>
+            <td>
+                {{ post["author"]}}
+            </td>
+            <td>
+                {{ post["item"]}}
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+  
+
+</body>
+
+</html>
