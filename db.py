@@ -1,6 +1,5 @@
 from collections.abc import Sequence
 import sqlite3
-from flask import g
 
 DB_PATH = "database.db"
 
@@ -9,6 +8,14 @@ def get_conn() -> sqlite3.Connection:
     conn.execute("PRAGMA foreign_keys = ON")
     conn.row_factory = sqlite3.Row
     return conn
+
+
+def init_db():
+    conn = get_conn()
+    with open("schema.sql",) as f:
+        conn.executescript(f.read())
+    conn.commit()
+    conn.close()
 
 # Execute a command and return the last row id
 def execute(sql: str, params: dict | Sequence = ()) -> int | None:
