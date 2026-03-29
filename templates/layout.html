@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+    <div class="header">
+        <h1>Lainaaja</h1>
+    </div>
+    <hr/>
+    <div class="nav">
+        <nav>
+            <ul>
+                <li><a href="/">Etusivu</a></li>
+                <li><a href="/register">Rekisteröidy</a></li>
+                {% if session.user_id %}
+                <li><a href="/logout">Kirjaudu ulos</a></li>
+                {% else %}
+                <li><a href="/login">Kirjaudu sisään</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    <hr/>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+
+</html>

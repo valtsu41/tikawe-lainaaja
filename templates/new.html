@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Uusi ilmoitus</title>
-</head>
+{% block title %}Uusi ilmoitus{% endblock %}
 
-<body>
+{% block content %}
   <h1>Uusi ilmoitus</h1>
   <form action="/posts" method="post">
     <p>
@@ -19,5 +16,4 @@
     <input type="submit" value="Luo ilmoitus"/>
   </form>
 </body>
-
-</html>
+{% endblock %}

@@ -1,20 +1,15 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Etusivu</title>
-</head>
+{% block title %}Etusivu{% endblock %}
 
-<body>
-  <h1>Etusivu</h1>
-  <ul>
+{% block content %}
+<h2>Etusivu</h2>
+<ul>
     <li>
-      <a href="/posts">Ilmoitukset</a>
+        <a href="/posts">Ilmoitukset</a>
     </li>
-  </ul>
-  <p>
+</ul>
+<p>
     Tätä sivua on katsottu {{ visit_count }} kertaa!
-  </p>
-</body>
-
-</html>
+</p>
+{% endblock %}
