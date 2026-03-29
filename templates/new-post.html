@@ -6,9 +6,7 @@
   <h1>Uusi ilmoitus</h1>
   <form action="/posts" method="post">
     <p>
-      Käyttäjänimi: <br/>
-      <input type="text" name="username"/>
-    </p>
+      Käyttäjänimi: <b>{{ session.username }}</b>
     <p>
       Lainattava tavara: <br/>
       <input type="text" name="item"/>
