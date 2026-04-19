@@ -21,10 +21,10 @@
 {% for post in posts %}
     <tr>
         <td>
-            {{ post["author"]}}
+            {{ post["author_name"] }}
         </td>
         <td>
-           <a href="/post/{{ post['id'] }}">{{ post["item"] }}</a>
+           <a href="/posts/{{ post['id'] }}">{{ post["item"] }}</a>
         </td>
     </tr>
 {% endfor %}

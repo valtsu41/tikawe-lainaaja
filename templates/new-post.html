@@ -9,7 +9,11 @@
       Käyttäjänimi: <b>{{ session.username }}</b>
     <p>
       Lainattava tavara: <br/>
-      <input type="text" name="item"/>
+      <input type="text" name="item" maxlength="50" required/>
+    </p>
+    <p>
+      Lisätiedot: <br/>
+      <textarea name="info" maxlength="1000"></textarea>
     </p>
     <input type="submit" value="Luo ilmoitus"/>
   </form>

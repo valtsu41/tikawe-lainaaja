@@ -11,6 +11,14 @@ CREATE TABLE Users (
 
 CREATE TABLE Posts (
     id INTEGER PRIMARY KEY,
-    author TEXT,
-    item TEXT
+    author INTEGER REFERENCES Users,
+    item TEXT,
+    info TEXT
 );
+
+CREATE TABLE Views (
+    id INTEGER PRIMARY KEY,
+    viewed_at TEXT,
+    user INTEGER REFERENCES Users,
+    post INTEGER REFERENCES Posts
+)

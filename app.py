@@ -1,7 +1,7 @@
 from datetime import datetime
 import sqlite3
 
-from flask import Flask, session, request, render_template, redirect
+from flask import Flask, session, request, render_template, redirect, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import db
@@ -44,12 +44,14 @@ def do_login():
     name = request.form["username"]
     passwd = request.form["password"]
 
-    passwd_hash = db.query("SELECT password_hash FROM Users WHERE username = ?", [name])[0][0]
-    if check_password_hash(passwd_hash, passwd):
-        session["username"] = name
-        return redirect("/")
-    else:
-        return "Virheellinen käyttäjätunnus tai salasana"
+    res = db.query("SELECT id, password_hash FROM Users WHERE username = ?", [name])
+    if res:
+        user_id, passwd_hash = res[0]
+        if check_password_hash(passwd_hash, passwd):
+            session["user_id"] = user_id
+            session["username"] = name
+            return redirect("/")
+    return "Virheellinen käyttäjätunnus tai salasana"
 
 
 
@@ -66,20 +68,29 @@ def new_post():
 
 @app.route("/posts")
 def posts():
-    posts = db.query("SELECT * FROM Posts")
+    posts = db.query("""
+        SELECT P.id AS id, U.username AS author_name, P.item AS item
+        FROM Posts AS P JOIN Users AS U ON P.author = U.id
+    """)
     count = len(posts)
     return render_template("posts.html", count=count, posts=posts)
 
 @app.route("/posts", methods=["POST"])
 def add_post():
     item = request.form["item"]
-    db.execute("INSERT INTO Posts (author, item) VALUES (?, ?)", (session["username"], item))
-    return redirect("/posts")
+    info = request.form["info"]
+    post_id = db.execute("INSERT INTO Posts (author, item, info) VALUES (?, ?, ?)", [session["user_id"], item, info])
+    return redirect(f"/posts/{post_id}")
 
-@app.route("/post/<int:post_id>")
+@app.route("/posts/<int:post_id>")
 def get_post(post_id):
-    res = db.query("SELECT author, item FROM Posts WHERE id = ?", [post_id])
+    res = db.query("""
+        SELECT U.username As author_name, P.item AS item, P.info AS info
+        FROM Posts AS P JOIN Users AS U ON P.author = U.id
+        WHERE P.id = ?
+    """, [post_id])
     if not res:
         abort(404)
-    return render_template("post.html", post=res[0])
-    
+    db.execute("INSERT INTO Views (viewed_at, user, post) VALUES (datetime('now'), ?, ?)", [session["user_id"], post_id])
+    count = db.query("SELECT COUNT(*) FROM (SELECT DISTINCT user, post FROM Views)")[0][0]
+    return render_template("post.html", post=res[0], view_count=count)
