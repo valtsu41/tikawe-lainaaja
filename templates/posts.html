@@ -7,10 +7,14 @@
 <p>
     <a href="/new-post">Luo ilmoitus</a>
 </p>
-<p>
-    Ilmoituksia: {{ count }}
-</p>
 <hr/>
+<form action="/posts">
+    <input type="search" name="query"/>
+    <input type="submit" value="Hae">
+</form>
+<p>
+    Löydettyjä ilmoituksia: {{ count }}
+</p>
 <table>
 <thead>
     <tr>

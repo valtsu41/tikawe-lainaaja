@@ -68,10 +68,13 @@ def new_post():
 
 @app.route("/posts")
 def posts():
+    query = request.args.get("query", "")
+    sql_query = f"%{query}%"
     posts = db.query("""
         SELECT P.id AS id, U.username AS author_name, P.item AS item
         FROM Posts AS P JOIN Users AS U ON P.author = U.id
-    """)
+        WHERE P.item LIKE ?
+    """, [sql_query])
     count = len(posts)
     return render_template("posts.html", count=count, posts=posts)
 
