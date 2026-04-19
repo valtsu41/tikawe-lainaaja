@@ -76,7 +76,7 @@ def posts():
         WHERE P.item LIKE ?
     """, [sql_query])
     count = len(posts)
-    return render_template("posts.html", count=count, posts=posts)
+    return render_template("posts.html", query=query, count=count, posts=posts)
 
 @app.route("/posts", methods=["POST"])
 def add_post():
