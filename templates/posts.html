@@ -24,7 +24,7 @@
             {{ post["author"]}}
         </td>
         <td>
-            {{ post["item"]}}
+           <a href="/post/{{ post['id'] }}">{{ post["item"] }}</a>
         </td>
     </tr>
 {% endfor %}

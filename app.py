@@ -76,3 +76,10 @@ def add_post():
     db.execute("INSERT INTO Posts (author, item) VALUES (?, ?)", (session["username"], item))
     return redirect("/posts")
 
+@app.route("/post/<int:post_id>")
+def get_post(post_id):
+    res = db.query("SELECT author, item FROM Posts WHERE id = ?", [post_id])
+    if not res:
+        abort(404)
+    return render_template("post.html", post=res[0])
+    
