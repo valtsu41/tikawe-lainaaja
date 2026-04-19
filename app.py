@@ -53,12 +53,16 @@ def do_login():
             return redirect("/")
     return "Virheellinen käyttäjätunnus tai salasana"
 
-
-
 @app.route("/logout")
 def logout():
     del session["username"]
     return redirect("/")
+
+@app.route("/users/<int:user_id>")
+def user_page(user_id):
+    user = data.get_user(user_id)
+    posts = data.get_user_posts(user_id)
+    return render_template("user.html", user=user, posts=posts)
 
 @app.route("/new-post")
 def new_post():

@@ -30,11 +30,22 @@ def create_user(username: str, passwd: str):
     except sqlite3.IntegrityError:
         return None
 
+def get_user(user_id: int):
+    res = db.query("SELECT id, username FROM Users WHERE id = ?", [user_id])
+    if res:
+        return res[0]
+    else:
+        return None
+
+def get_user_posts(user_id: int):
+    res = db.query("SELECT author, item FROM Posts WHERE author = ?", [user_id])
+    return res
+
 # Post functions 
 
 def get_post(post_id: int):
     res = db.query("""
-        SELECT U.username As author_name, P.item AS item, P.info AS info
+        SELECT U.id AS author, U.username As author_name, P.item AS item, P.info AS info
         FROM Posts AS P JOIN Users AS U ON P.author = U.id
         WHERE P.id = ?
     """, [post_id])
@@ -49,7 +60,7 @@ def create_post(author_id: int, item: str, info: str):
 def search_posts(query: str):
     sql_query = f"%{query}%"
     return db.query("""
-        SELECT P.id AS id, U.username AS author_name, P.item AS item
+        SELECT P.id AS id, U.id AS author, U.username AS author_name, P.item AS item
         FROM Posts AS P JOIN Users AS U ON P.author = U.id
         WHERE P.item LIKE ?
     """, [sql_query])
