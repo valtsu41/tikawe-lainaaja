@@ -1,10 +1,16 @@
 from datetime import datetime
+import secrets
 import sqlite3
 
 from flask import Flask, session, request, render_template, redirect, abort
 
 import db
 import config
+import data
+
+def check_csrf():
+    if request.form["csrf_token"] != session["csrf_token"]:
+        abort(403)
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -43,6 +49,7 @@ def do_login():
     if (user_id := data.check_login(name, passwd)):
             session["user_id"] = user_id
             session["username"] = name
+            session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
     return "Virheellinen käyttäjätunnus tai salasana"
 
@@ -68,6 +75,7 @@ def posts():
 
 @app.route("/do-new-post", methods=["POST"])
 def add_post():
+    check_csrf()
     item = request.form["item"]
     info = request.form["info"]
     post_id = data.create_post(session["user_id"], item, info)
