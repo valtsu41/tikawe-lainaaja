@@ -4,7 +4,7 @@
 
 {% block content %}
   <h1>Uusi ilmoitus</h1>
-  <form action="/posts" method="post">
+  <form action="/do-new-post" method="post">
     <p>
       Käyttäjänimi: <b>{{ session.username }}</b>
     <p>
@@ -15,6 +15,7 @@
       Lisätiedot: <br/>
       <textarea name="info" maxlength="1000"></textarea>
     </p>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
     <input type="submit" value="Luo ilmoitus"/>
   </form>
 </body>
