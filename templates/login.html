@@ -4,7 +4,7 @@
 
 {% block content %}
 <h1>Kirjaudu</h1>
-{% if session.username %}
+{% if session.user_id %}
 <p>
     Olet jo kirjautunut sisään käyttäjällä {{ session.username }}
 </p>
