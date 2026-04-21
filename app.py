@@ -8,12 +8,15 @@ import db
 import config
 import data
 
+
 def check_csrf():
     if request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
 
+
 app = Flask(__name__)
 app.secret_key = config.secret_key
+
 
 @app.route("/")
 def index():
@@ -21,9 +24,11 @@ def index():
     visit_count = data.get_visit_count()
     return render_template("index.html", visit_count=visit_count)
 
+
 @app.route("/register")
 def register():
     return render_template("register.html")
+
 
 @app.route("/do-register", methods=["POST"])
 def do_register():
@@ -35,12 +40,13 @@ def do_register():
     user_id = data.create_user(name, passwd1)
     if user_id is None:
         return "VIRHE: tunnus on jo varattu"
-
     return "Tunnus luotu"
+
 
 @app.route("/login")
 def login():
     return render_template("login.html")
+
 
 @app.route("/do-login", methods=["POST"])
 def do_login():
@@ -53,10 +59,12 @@ def do_login():
             return redirect("/")
     return "Virheellinen käyttäjätunnus tai salasana"
 
+
 @app.route("/logout")
 def logout():
     del session["username"]
     return redirect("/")
+
 
 @app.route("/users/<int:user_id>")
 def user_page(user_id):
@@ -64,11 +72,6 @@ def user_page(user_id):
     posts = data.get_user_posts(user_id)
     return render_template("user.html", user=user, posts=posts)
 
-@app.route("/new-post")
-def new_post():
-    if "username" not in session:
-        return redirect("/login")
-    return render_template("new-post.html")
 
 @app.route("/posts")
 def posts():
@@ -77,13 +80,6 @@ def posts():
     count = len(posts)
     return render_template("posts.html", query=query, count=count, posts=posts)
 
-@app.route("/do-new-post", methods=["POST"])
-def add_post():
-    check_csrf()
-    item = request.form["item"]
-    info = request.form["info"]
-    post_id = data.create_post(session["user_id"], item, info)
-    return redirect(f"/posts/{post_id}")
 
 @app.route("/posts/<int:post_id>")
 def get_post(post_id):
@@ -92,3 +88,19 @@ def get_post(post_id):
     data.add_post_view(session["user_id"], post_id)
     count = data.get_post_viewer_count(post_id)
     return render_template("post.html", post=post, view_count=count)
+
+
+@app.route("/new-post")
+def new_post():
+    if "username" not in session:
+        return redirect("/login")
+    return render_template("new-post.html")
+
+
+@app.route("/do-new-post", methods=["POST"])
+def add_post():
+    check_csrf()
+    item = request.form["item"]
+    info = request.form["info"]
+    post_id = data.create_post(session["user_id"], item, info)
+    return redirect(f"/posts/{post_id}")
