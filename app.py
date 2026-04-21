@@ -69,6 +69,8 @@ def logout():
 @app.route("/users/<int:user_id>")
 def user_page(user_id):
     user = data.get_user(user_id)
+    if not user:
+        abort(404)
     posts = data.get_user_posts(user_id)
     return render_template("user.html", user=user, posts=posts)
 
@@ -83,7 +85,8 @@ def posts():
 
 @app.route("/posts/<int:post_id>")
 def get_post(post_id):
-    if not (post := data.get_post(post_id)):
+    post = data.get_post(post_id)
+    if not post:
         abort(404)
     data.add_post_view(session["user_id"], post_id)
     count = data.get_post_viewer_count(post_id)
