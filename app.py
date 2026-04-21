@@ -1,4 +1,5 @@
 from datetime import datetime
+from functools import wraps
 import secrets
 import sqlite3
 
@@ -9,9 +10,14 @@ import config
 import data
 
 
-def check_csrf():
-    if request.form["csrf_token"] != session["csrf_token"]:
-        abort(403)
+def check_csrf(f):
+    @wraps(f)
+    def d(*args, **kwargs):
+        if request.form["csrf_token"] != session["csrf_token"]:
+            abort(400)
+        else:
+            return(f(*args, **kwargs))
+    return d
 
 
 app = Flask(__name__)
@@ -101,9 +107,31 @@ def new_post():
 
 
 @app.route("/do-new-post", methods=["POST"])
+@check_csrf
 def add_post():
-    check_csrf()
     item = request.form["item"]
     info = request.form["info"]
     post_id = data.create_post(session["user_id"], item, info)
     return redirect(f"/posts/{post_id}")
+
+
+@app.route("/remove-post/<int:post_id>")
+def remove_post_page(post_id):
+    post = data.get_post(post_id)
+    if not post:
+        abort(404)
+    return render_template("remove-post.html", post=post)
+
+@app.route("/do-remove-post/<int:post_id>", methods=["POST"])
+@check_csrf
+def remove_post(post_id):
+    post = data.get_post(post_id)
+    if not post:
+        abort(404)
+    if post["author"] != session["user_id"]:
+        abort(403)
+    if "continue" in request.form:
+        data.remove_post(post_id)
+        return redirect("/posts")
+    else:
+        return redirect(f"/posts/{post_id}")

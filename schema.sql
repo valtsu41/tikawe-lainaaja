@@ -20,5 +20,5 @@ CREATE TABLE Views (
     id INTEGER PRIMARY KEY,
     viewed_at TEXT,
     user INTEGER REFERENCES Users,
-    post INTEGER REFERENCES Posts
+    post INTEGER REFERENCES Posts ON DELETE CASCADE
 )

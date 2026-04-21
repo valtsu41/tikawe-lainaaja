@@ -38,14 +38,14 @@ def get_user(user_id: int):
         return None
 
 def get_user_posts(user_id: int):
-    res = db.query("SELECT author, item FROM Posts WHERE author = ?", [user_id])
+    res = db.query("SELECT id, item FROM Posts WHERE author = ?", [user_id])
     return res
 
 # Post functions 
 
 def get_post(post_id: int):
     res = db.query("""
-        SELECT U.id AS author, U.username As author_name, P.item AS item, P.info AS info
+        SELECT P.id AS id,   U.id AS author, U.username As author_name, P.item AS item, P.info AS info
         FROM Posts AS P JOIN Users AS U ON P.author = U.id
         WHERE P.id = ?
     """, [post_id])
@@ -54,9 +54,6 @@ def get_post(post_id: int):
     else:
         return res[0]
 
-def create_post(author_id: int, item: str, info: str):
-    return db.execute("INSERT INTO Posts (author, item, info) VALUES (?, ?, ?)", [author_id, item, info])
-
 def search_posts(query: str):
     sql_query = f"%{query}%"
     return db.query("""
@@ -64,6 +61,12 @@ def search_posts(query: str):
         FROM Posts AS P JOIN Users AS U ON P.author = U.id
         WHERE P.item LIKE ?
     """, [sql_query])
+
+def create_post(author_id: int, item: str, info: str):
+    return db.execute("INSERT INTO Posts (author, item, info) VALUES (?, ?, ?)", [author_id, item, info])
+
+def remove_post(post_id: int):
+    db.execute("DELETE FROM Posts WHERE id = ?", [post_id])
 
 
 # Post viewer functions

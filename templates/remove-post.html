@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}Poista ilmoitus{% endblock %}
+
+{% block content %}
+<h2>Poista ilmoitus</h2>
+<p>Haluatko poistaa ilmoituksen?</p>
+<form action="/do-remove-post/{{ post.id }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
+    <input type="submit" name="continue" value="Jatka" />
+    <input type="submit" name="cancel" value="Peruuta" />
+</form>
+{% endblock %}
