@@ -1,23 +1,21 @@
+import secrets
 from datetime import datetime
 from functools import wraps
-import secrets
-import sqlite3
 
 from flask import Flask, session, request, render_template, redirect, abort
 
-import db
 import config
 import data
 
 
 def check_csrf(f):
     @wraps(f)
-    def d(*args, **kwargs):
+    def wrapper(*args, **kwargs):
         if request.form["csrf_token"] != session["csrf_token"]:
             abort(400)
         else:
             return(f(*args, **kwargs))
-    return d
+    return wrapper
 
 
 app = Flask(__name__)
@@ -58,12 +56,13 @@ def login():
 def do_login():
     name = request.form["username"]
     passwd = request.form["password"]
-    if (user_id := data.check_login(name, passwd)):
-            session["user_id"] = user_id
-            session["username"] = name
-            session["csrf_token"] = secrets.token_hex(16)
-            return redirect("/")
-    return "Virheellinen käyttäjätunnus tai salasana"
+    user_id = data.check_login(name, passwd)
+    if not user_id:
+        return "Virheellinen käyttäjätunnus tai salasana"
+    session["user_id"] = user_id
+    session["username"] = name
+    session["csrf_token"] = secrets.token_hex(16)
+    return redirect("/")
 
 
 @app.route("/logout")
