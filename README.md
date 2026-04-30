@@ -1,5 +1,5 @@
 # tikawe-lainaaja
-Tikawe course project
+Tikawe course project | Tikawe-kurssin projekti
 ## Sovelluksen toiminnot
 Sovelluksen perusidea on, että käyttäjät voivat sekä tarjota asioita lainattavaksi, että lainata niitä muilta käyttäjiltä.
 - [x] Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen.
@@ -10,5 +10,8 @@ Sovelluksen perusidea on, että käyttäjät voivat sekä tarjota asioita lainat
 - [ ] Käyttäjä pystyy valitsemaan lainausilmoituksille yhden tai useamman luokittelun.
 - [ ] Käyttäjä pystyy lainaamaan toisten käyttäjien ilmoitusten kohteita.
 ## Sovelluksen käyttäminen
-Sovelluksen tietokanta pitää ensin alustaa suorittamalla python-skripti `init_db.py` esim. komennolla `python init_db.py`.
+Sovelluksen tietokanta pitää ensin alustaa tietokannan hallintatyökalulla `db_admin.py`.
+1. Avaa hallintatyökalu esim. komennolla `python db_admin.py`.
+2. Syötä hallintatyökaluun komento `init`.
+3. Sulje hallintatyökalu syöttämällä komento `exit`.
 Tämän jälkeen varsinaisen sovelluksen saa käynnistettyä komennolla `flask run`.
