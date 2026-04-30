@@ -93,7 +93,8 @@ def get_post(post_id):
     post = data.get_post(post_id)
     if not post:
         abort(404)
-    data.add_post_view(session["user_id"], post_id)
+    if "user_id" in session:
+        data.add_post_view(session["user_id"], post_id)
     count = data.get_post_viewer_count(post_id)
     return render_template("post.html", post=post, view_count=count)
 
