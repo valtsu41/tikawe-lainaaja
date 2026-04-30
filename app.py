@@ -2,7 +2,7 @@ import secrets
 from datetime import datetime
 from functools import wraps
 
-from flask import Flask, session, request, render_template, redirect, abort
+from flask import Flask, session, request, render_template, redirect, abort, flash
 
 import config
 import data
@@ -14,9 +14,18 @@ def check_csrf(f):
         if request.form["csrf_token"] != session["csrf_token"]:
             abort(400)
         else:
-            return(f(*args, **kwargs))
+            return f(*args, **kwargs)
     return wrapper
 
+def require_login(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if "user_id" not in session:
+            flash("Toiminto vaatii kirjautumisen")
+            return redirect("/login")
+        else:
+            return f(*args, **kwargs)
+    return wrapper
 
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
@@ -100,6 +109,7 @@ def get_post(post_id):
 
 
 @app.route("/new-post")
+@require_login
 def new_post():
     if "username" not in session:
         return redirect("/login")
@@ -107,6 +117,7 @@ def new_post():
 
 
 @app.route("/do-new-post", methods=["POST"])
+@require_login
 @check_csrf
 def add_post():
     item = request.form["item"]
@@ -116,6 +127,7 @@ def add_post():
 
 
 @app.route("/remove-post/<int:post_id>")
+@require_login
 def remove_post_page(post_id):
     post = data.get_post(post_id)
     if not post:
@@ -123,6 +135,7 @@ def remove_post_page(post_id):
     return render_template("remove-post.html", post=post)
 
 @app.route("/do-remove-post/<int:post_id>", methods=["POST"])
+@require_login
 @check_csrf
 def remove_post(post_id):
     post = data.get_post(post_id)
