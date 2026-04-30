@@ -46,6 +46,8 @@ def register():
 @app.route("/do-register", methods=["POST"])
 def do_register():
     name = request.form["username"]
+    if len(name) > 20:
+        abort(400)
     passwd1 = request.form["password1"]
     passwd2 = request.form["password2"]
     if passwd1 != passwd2:
@@ -118,8 +120,8 @@ def new_post():
 @require_login
 @check_csrf
 def add_post():
-    item = request.form["item"]
-    info = request.form["info"]
+    item = request.form["item"][:50]
+    info = request.form["info"][:1000]
     post_id = data.create_post(session["user_id"], item, info)
     return redirect(f"/posts/{post_id}")
 
@@ -143,8 +145,8 @@ def edit_post(post_id):
     if post["author"] != session["user_id"]:
         abort(403)
     
-    item = request.form["item"]
-    info = request.form["info"]
+    item = request.form["item"][:50]
+    info = request.form["info"][:1000]
     data.edit_post(post_id, item, info)
     return redirect(f"/posts/{post_id}")
 
