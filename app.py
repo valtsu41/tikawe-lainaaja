@@ -19,7 +19,7 @@ def check_csrf(f):
 
 
 app = Flask(__name__)
-app.secret_key = config.secret_key
+app.config.from_pyfile("config.py")
 
 
 @app.route("/")
