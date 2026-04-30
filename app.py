@@ -157,6 +157,7 @@ def remove_post_page(post_id):
         abort(404)
     return render_template("remove-post.html", post=post)
 
+
 @app.route("/do-remove-post/<int:post_id>", methods=["POST"])
 @require_login
 @check_csrf
