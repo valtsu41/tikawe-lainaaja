@@ -9,6 +9,8 @@
 <hr/>
 <p>{{ post["info"] }}</p>
 {% if post["author"] == session.user_id %}
+<a href="/edit-post/{{ post['id'] }}">Muokkaa</a>
+<span> | </span>
 <a href="/remove-post/{{ post['id'] }}">Poista</a>
 {% endif %}
 {% endblock %}

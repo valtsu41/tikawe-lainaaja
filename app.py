@@ -111,9 +111,7 @@ def get_post(post_id):
 @app.route("/new-post")
 @require_login
 def new_post():
-    if "username" not in session:
-        return redirect("/login")
-    return render_template("new-post.html")
+    return render_template("editor.html", mode="new")
 
 
 @app.route("/do-new-post", methods=["POST"])
@@ -123,6 +121,31 @@ def add_post():
     item = request.form["item"]
     info = request.form["info"]
     post_id = data.create_post(session["user_id"], item, info)
+    return redirect(f"/posts/{post_id}")
+
+
+@app.route("/edit-post/<int:post_id>")
+@require_login
+def edit_post_page(post_id):
+    post = data.get_post(post_id)
+    if not post:
+        abort(404)
+    return render_template("editor.html", mode="edit", post=post, item_value=post["item"], info_value=post["info"])
+
+
+@app.route("/do-edit-post/<int:post_id>", methods=["POST"])
+@require_login
+@check_csrf
+def edit_post(post_id):
+    post = data.get_post(post_id)
+    if not post:
+        abort(404)
+    if post["author"] != session["user_id"]:
+        abort(403)
+    
+    item = request.form["item"]
+    info = request.form["info"]
+    data.edit_post(post_id, item, info)
     return redirect(f"/posts/{post_id}")
 
 

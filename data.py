@@ -76,6 +76,10 @@ def create_post(author_id: int, item: str, info: str):
     return db.execute("INSERT INTO Posts (author, item, info) VALUES (?, ?, ?)", [author_id, item, info])
 
 
+def edit_post(post_id: int, item: str, info: str):
+    return db.execute("UPDATE Posts SET item = ?, info = ? WHERE id = ?", [item, info, post_id])
+
+
 def remove_post(post_id: int):
     db.execute("DELETE FROM Posts WHERE id = ?", [post_id])
 
