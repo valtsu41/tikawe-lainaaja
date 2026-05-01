@@ -15,7 +15,7 @@ class Shell(cmd.Cmd):
         return True
 
     def do_init(self, arg):
-        "creates the database file and initializes the database with the schema."
+        "Creates the database file and initializes the database with the schema."
         if os.path.exists(db.DB_PATH):
             print(f"The database file ({db.DB_PATH}) location already exists.")
             return
@@ -39,7 +39,6 @@ class Shell(cmd.Cmd):
         else:
             print("Aborting")
             return
-
 
 
 if __name__ == "__main__":
