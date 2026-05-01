@@ -18,12 +18,12 @@
     <p>
       Käyttäjänimi: <b>{{ session.username }}</b>
     <p>
-      Lainattava tavara: <br/>
-      <input type="text" name="item" maxlength="50" required value="{{ item_value }}"/>
+      <label for="item_field">Lainattava tavara</label>:<br/>
+      <input id="item_field" type="text" name="item" maxlength="50" required value="{{ item_value }}"/>
     </p>
     <p>
-      Lisätiedot: <br/>
-      <textarea name="info" maxlength="1000">{{ info_value }}</textarea>
+      <label for="info_field"> Lisätiedot</label>:<br/>
+      <textarea id="info_field" name="info" maxlength="1000">{{ info_value }}</textarea>
     </p>
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
     <input type="submit" value="{{ submit_text }}"/>

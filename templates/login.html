@@ -12,12 +12,12 @@
 {% else %}
 <form action="/do-login" method="post">
     <p>
-        Käyttäjänimi: <br/>
-        <input type="text" name="username" required/>
+        <label for="username_field">Käyttäjänimi</label>:<br/>
+        <input id="username_field" type="text" name="username" required/>
     </p>
     <p>
-        Salasana: <br/>
-        <input type="password" name="password" required/>
+        <label for="password_field">Salasana</label>:<br/>
+        <input id="password_field" type="password" name="password" required/>
     </p>
     <input type="submit" value="Kirjaudu"/>
 </form>
