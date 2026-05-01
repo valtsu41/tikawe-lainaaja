@@ -5,6 +5,14 @@
 {% block content %}
 <h2>Käyttäjä {{ user.username }}</h2>
 <hr>
+<h3>Käyttäjän tilastot</h3>
+<dl>
+    <dt>Aktiivisia ilmoituksia</dt>
+    <dl>{{ post_count }}</dl>
+
+    <dt>Varauksia tehty</dt>
+    <dl>{{ reservation_count }}</dl>
+</dl>
 <h3>Käyttäjän ilmoitukset</h3>
 <table>
 <thead>

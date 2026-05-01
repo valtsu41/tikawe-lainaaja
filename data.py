@@ -43,6 +43,16 @@ def get_user(user_id: int):
         return None
 
 
+def get_user_post_count(user_id: int):
+    res = db.query("SELECT COUNT(*) FROM Posts WHERE author = ?", [user_id])[0][0]
+    return res
+
+
+def get_user_reservation_count(user_id: int):
+    res = db.query("SELECT COUNT(*) FROM Reservations WHERE user = ?", [user_id])[0][0]
+    return res
+
+
 def get_user_posts(user_id: int):
     res = db.query("SELECT id, item FROM Posts WHERE author = ?", [user_id])
     return res
@@ -98,11 +108,15 @@ def get_post_viewer_count(post_id: int):
 
 # Reservation functions
 def get_reservation(reservation_id: int):
-    return db.query("""
+    res = db.query("""
         SELECT R.id id, R.post post, R.user user_id, U.username username, R.start_date start_date, R.end_date end_date
         FROM Reservations R LEFT JOIN Users U
         WHERE R.id = ?
-    """, [reservation_id])[0]
+    """, [reservation_id])
+    if not res:
+        return None
+    else:
+        return res[0]
                     
 
 def get_post_reservations(post_id: int, start_date: str = "", end_date: str = ""):
