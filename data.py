@@ -93,3 +93,47 @@ def add_post_view(user_id: int, post_id: int):
 
 def get_post_viewer_count(post_id: int):
     return db.query("SELECT COUNT(*) FROM (SELECT DISTINCT user, post FROM Views WHERE post = ?)", [post_id])[0][0]
+
+
+
+# Reservation functions
+def get_reservation(reservation_id: int):
+    return db.query("""
+        SELECT R.id id, R.post post, R.user user_id, U.username username, R.start_date start_date, R.end_date end_date
+        FROM Reservations R LEFT JOIN Users U
+        WHERE R.id = ?
+    """, [reservation_id])[0]
+                    
+
+def get_post_reservations(post_id: int, start_date: str = "", end_date: str = ""):
+    if start_date and end_date:
+        return db.query("""
+            SELECT R.id id, R.post post, R.user user_id, U.username username, R.start_date start_date, R.end_date end_date
+            FROM Reservations R LEFT JOIN Users U ON R.user = U.id
+            WHERE post = ? AND start_date <= ? AND end_date >= ?
+            ORDER BY start_date
+        """, [post_id, end_date, start_date])
+    elif start_date:
+        return db.query("""
+            SELECT R.id id, R.post post, R.user user_id, U.username username, R.start_date start_date, R.end_date end_date
+            FROM Reservations R LEFT JOIN Users U ON R.user = U.id
+            WHERE post = ? AND end_date >= ?
+            ORDER BY start_date
+        """, [post_id, start_date])
+    else:
+        return db.query("""
+            SELECT R.id id, R.post post, R.user user_id, U.username username, R.start_date start_date, R.end_date end_date
+            FROM Reservations R LEFT JOIN Users U ON R.user = U.id
+            WHERE post = ?
+            ORDER BY start_date
+        """, [post_id])
+
+
+def add_reservation(post_id: int, user_id: int, start_date: str, end_date: str):
+    return db.execute(
+        "INSERT INTO Reservations (post, user, start_date, end_date) VALUES (?, ?, ?, ?)",
+        [post_id, user_id, start_date, end_date]
+    )
+
+def remove_reservation(reservation_id: int):
+    db.execute("DELETE FROM Reservations WHERE id = ?", [reservation_id])

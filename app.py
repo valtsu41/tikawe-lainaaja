@@ -1,5 +1,5 @@
 import secrets
-from datetime import datetime
+from datetime import date
 from functools import wraps
 
 from flask import Flask, session, request, render_template, redirect, abort, flash
@@ -104,10 +104,14 @@ def get_post(post_id):
     post = data.get_post(post_id)
     if not post:
         abort(404)
+    
     if "user_id" in session:
         data.add_post_view(session["user_id"], post_id)
     count = data.get_post_viewer_count(post_id)
-    return render_template("post.html", post=post, view_count=count)
+
+    today_str = date.today().isoformat()
+    reservations = data.get_post_reservations(post_id, today_str)
+    return render_template("post.html", post=post, view_count=count, today=today_str, reservations=reservations)
 
 
 @app.route("/new-post")
@@ -174,3 +178,46 @@ def remove_post(post_id):
         return redirect("/posts")
     else:
         return redirect(f"/posts/{post_id}")
+    
+
+@app.route("/do-add-reservation/<int:post_id>", methods=["POST"])
+@require_login
+def add_reservation(post_id):
+    start_date_str = request.form["start_date"]
+    end_date_str = request.form["end_date"]
+
+    start_date = date.fromisoformat(start_date_str)
+    end_date = date.fromisoformat(end_date_str)
+
+    if start_date > end_date:
+        return "Varauksen alkupäivä ei voi olla päättymispäivän jälkeen."
+
+    reservations = data.get_post_reservations(post_id, start_date_str, end_date_str)
+    if len(reservations) > 0:
+        return "Tälle ajalle on jo varaus."
+
+    reservation = data.add_reservation(post_id, session["user_id"], start_date_str, end_date_str)
+    return "Varaus luotu onnistuneesti."
+
+
+@app.route("/remove-reservation/<int:reservation_id>")
+@require_login
+def remove_reservation_page(reservation_id):
+    reservation = data.get_reservation(reservation_id)
+    if not reservation:
+        abort(404)
+    return render_template("remove-reservation.html", reservation=reservation)
+
+
+@app.route("/do-remove-reservation/<int:reservation_id>", methods=["POST"])
+@require_login
+@check_csrf
+def remove_reservation(reservation_id):
+    reservation = data.get_reservation(reservation_id)
+    if not reservation:
+        abort(404)
+    if reservation["user_id"] != session["user_id"]:
+        abort(403)
+    if "continue" in request.form:
+        data.remove_reservation(reservation_id)
+    return redirect(f"/posts/{reservation["post"]}")

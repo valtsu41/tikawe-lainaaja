@@ -1,16 +1,74 @@
 {% extends "layout.html" %}
 
-{% block title %}Ilmoitus - {{ post[item] }}{% endblock %}
+{% block title %}Ilmoitus - {{ post["item"] }}{% endblock %}
 
 {% block content %}
 <h2>{{ post["item"] }}</h2>
-<p>Lainaaja: {{ post["author_name"] }}</p>
-<p>{{ view_count }} käyttäjää on katsonut tätä.</p>
-<hr/>
+<h3>Lainaaja</h3>
+<p><a href="/users/{{ post.author }}">{{ post["author_name"] }}</a></p>
+<h3>Lisätiedot</h3>
 <p>{{ post["info"] }}</p>
+
+<p>{{ view_count }} käyttäjää on katsonut tätä.</p>
+
 {% if post["author"] == session.user_id %}
 <a href="/edit-post/{{ post['id'] }}">Muokkaa</a>
 <span> | </span>
 <a href="/remove-post/{{ post['id'] }}">Poista</a>
 {% endif %}
+
+<hr>
+
+{% if reservations and reservations[0].start_date <= today and reservations[0].end_date >= today %}
+    <strong>Tällä hetkellä lainattu käyttäjälle <a href="/users/{{ reservations[0].username }}">{{reservations[0].username}}</a></strong>
+{% else %}
+    <strong>Tällä hetkellä vapaana. Voit tehdä varauksen alhaalta löytyvällä lomakkeella.</strong>
+{% endif %}
+
+<h3>Varaukset</h3>
+
+{% if reservations %}
+    <table>
+        <thead>
+            <tr>
+                <td>Alkupäivä</td>
+                <td>Loppupäivä</td>
+                <td>Varaaja</td>
+            </tr>
+        </thead>
+        {% for reservation in reservations %}
+            <tr>
+                <td>{{ reservation.start_date }}</td>
+                <td>{{ reservation.end_date }}</td>
+                <td><a href="/users/{{ reservation.user_id }}">{{reservation.username}}</td>
+                {% if reservation.user_id == session.user_id %}
+                    <td><a href="/remove-reservation/{{ reservation.id }}">Poista</a></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Ei varauksia</p>
+{% endif %}
+
+<h3>Lisää varaus</h3>
+{% if session.user_id %}
+<form action="/do-add-reservation/{{ post.id }}" method="post">
+    <p>
+        <label for="start_date_field">Alku</label>
+        <input id="start_date_field" type="date" name="start_date" min="{{ today }}" required/>
+    </p>
+    <p>
+        <label for="start_date_field">Loppu</label>
+        <input id="end_date_field" type="date" name="end_date" min="{{ today }}" required/>
+    </p>
+    <input type="submit" value="Varaa"/>
+</form>
+
+{% else %}
+
+<p><a href="/login">Kirjaudu sisään</a> luodaksesi varauksia</p>
+
+{% endif %}
+
 {% endblock %}

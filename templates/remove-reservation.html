@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}Poista varaus{% endblock %}
+
+{% block content %}
+<h2>Poista varaus</h2>
+<p>Haluatko poistaa varauksen?</p>
+<form action="/do-remove-reservation/{{ reservation.id }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
+    <input type="submit" name="continue" value="Jatka" />
+    <input type="submit" name="cancel" value="Peruuta" />
+</form>
+{% endblock %}

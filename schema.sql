@@ -21,4 +21,12 @@ CREATE TABLE Views (
     viewed_at TEXT,
     user INTEGER REFERENCES Users,
     post INTEGER REFERENCES Posts ON DELETE CASCADE
-)
+);
+
+CREATE TABLE Reservations (
+    id INTEGER PRIMARY KEY,
+    post INTEGER REFERENCES Posts ON DELETE CASCADE,
+    user INTEGER REFERENCES Users,
+    start_date TEXT,
+    end_date TEXT
+);
