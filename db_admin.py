@@ -24,6 +24,7 @@ class Shell(cmd.Cmd):
             db.init_db()
         except Exception as e:
             print("Initialization failed with error:", e)
+            return
         print("Database initialized!")
     
     def do_wipe(self, arg):
@@ -34,7 +35,11 @@ class Shell(cmd.Cmd):
         path = os.path.abspath(db.DB_PATH)
         answer = input(f"Are you sure you want to DELETE the file {path} (yes/no) ")
         if answer == "yes":
-            os.remove(path)
+            try:
+                os.remove(path)
+            except Exception as e:
+                print("There was an error while attempting to remove database:", e)
+                return
             print("The database file has been removed.")
         else:
             print("Aborting")
