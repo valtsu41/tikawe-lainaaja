@@ -26,6 +26,14 @@
         </nav>
     </div>
     <hr/>
+    <div class="flash">
+        {% for message in get_flashed_messages() %}
+        <p>
+            <strong>{{ message }}</strong>
+        </p>
+        <hr/>
+        {% endfor %}
+    </div>
     <div class="content">
         {% block content %}{% endblock %}
     </div>

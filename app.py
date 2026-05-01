@@ -51,11 +51,14 @@ def do_register():
     passwd1 = request.form["password1"]
     passwd2 = request.form["password2"]
     if passwd1 != passwd2:
-        return "Salasanat eivät täsmää"
+        flash("Salasanat eivät täsmää", "error")
+        return redirect("/register")
     user_id = data.create_user(name, passwd1)
     if user_id is None:
-        return "VIRHE: tunnus on jo varattu"
-    return "Tunnus luotu"
+        flash("Käyttäjänimi on jo varattu", "error")
+        return redirect("/register")
+    flash("Käyttäjän luonti onnistui. Ole hyvä, ja kirjaudu sisään.")
+    return redirect(f"/login")
 
 
 @app.route("/login")
@@ -69,16 +72,19 @@ def do_login():
     passwd = request.form["password"]
     user_id = data.check_login(name, passwd)
     if not user_id:
-        return "Virheellinen käyttäjätunnus tai salasana"
+        flash("Virheellinen käyttäjätunnus tai salasana", "error")
+        return redirect("/login")
     session["user_id"] = user_id
     session["username"] = name
     session["csrf_token"] = secrets.token_hex(16)
+    flash("Sisäänkirjautuminen onnistui.")
     return redirect("/")
 
 
 @app.route("/logout")
 def logout():
     session.clear()
+    flash("Uloskirjautuminen onnistui.")
     return redirect("/")
 
 
@@ -87,8 +93,11 @@ def user_page(user_id):
     user = data.get_user(user_id)
     if not user:
         abort(404)
+    
+    post_count = data.get_user_post_count(user_id)
+    reservation_count = data.get_user_reservation_count(user_id)
     posts = data.get_user_posts(user_id)
-    return render_template("user.html", user=user, posts=posts)
+    return render_template("user.html", user=user, post_count=post_count, reservation_count=reservation_count, posts=posts)
 
 
 @app.route("/posts")
@@ -127,6 +136,7 @@ def add_post():
     item = request.form["item"][:50]
     info = request.form["info"][:1000]
     post_id = data.create_post(session["user_id"], item, info)
+    flash("Ilmoitus luotu.")
     return redirect(f"/posts/{post_id}")
 
 
@@ -152,6 +162,7 @@ def edit_post(post_id):
     item = request.form["item"][:50]
     info = request.form["info"][:1000]
     data.edit_post(post_id, item, info)
+    flash("Muokkaus onnistui.")
     return redirect(f"/posts/{post_id}")
 
 
@@ -175,6 +186,7 @@ def remove_post(post_id):
         abort(403)
     if "continue" in request.form:
         data.remove_post(post_id)
+        flash("Ilmoitus poistettu.")
         return redirect("/posts")
     else:
         return redirect(f"/posts/{post_id}")
@@ -190,14 +202,17 @@ def add_reservation(post_id):
     end_date = date.fromisoformat(end_date_str)
 
     if start_date > end_date:
-        return "Varauksen alkupäivä ei voi olla päättymispäivän jälkeen."
+        flash("Varauksen alkupäivä ei voi olla päättymispäivän jälkeen.")
+        return redirect(f"/posts/{post_id}")
 
     reservations = data.get_post_reservations(post_id, start_date_str, end_date_str)
     if len(reservations) > 0:
-        return "Tälle ajalle on jo varaus."
+        flash("Tälle ajalle on jo varaus.", "error")
+        return redirect(f"/posts/{post_id}")
 
     reservation = data.add_reservation(post_id, session["user_id"], start_date_str, end_date_str)
-    return "Varaus luotu onnistuneesti."
+    flash("Varaus luotu onnistuneesti.")
+    return redirect(f"/posts/{post_id}")
 
 
 @app.route("/remove-reservation/<int:reservation_id>")
@@ -220,4 +235,6 @@ def remove_reservation(reservation_id):
         abort(403)
     if "continue" in request.form:
         data.remove_reservation(reservation_id)
+    
+    flash("Varaus poistettu.")
     return redirect(f"/posts/{reservation["post"]}")
