@@ -9,10 +9,17 @@ CREATE TABLE Users (
     password_hash TEXT
 );
 
+CREATE TABLE Categories (
+    id INTEGER PRIMARY KEY,
+    name TEXT
+);
+
+
 CREATE TABLE Posts (
     id INTEGER PRIMARY KEY,
     author INTEGER REFERENCES Users,
     item TEXT,
+    category INTEGER REFERENCES Categories ON DELETE SET NULL,
     info TEXT
 );
 

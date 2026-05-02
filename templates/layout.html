@@ -25,13 +25,15 @@
             </nav>
         </div>
     </header>
-    <div class="flash">
-        {% for message in get_flashed_messages() %}
-            <p>
-                <strong>{{ message }}</strong>
-            </p>
-            <hr/>
-        {% endfor %}
+    <div id="flashes">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <p class="flash {{ category }}-flash">
+                    <strong>{{ message }}</strong>
+                </p>
+                <hr/>
+            {% endfor %}
+        {% endwith %}
     </div>
     <div class="content">
         {% block content %}{% endblock %}

@@ -140,7 +140,8 @@ def get_post(post_id):
 @app.route("/new-post")
 @require_login
 def new_post():
-    return render_template("editor.html", mode="new")
+    categories = data.get_categories()
+    return render_template("editor.html", mode="new", categories=categories)
 
 
 @app.route("/do-new-post", methods=["POST"])
@@ -148,8 +149,12 @@ def new_post():
 @check_csrf
 def add_post():
     item = request.form["item"][:50]
+    try:
+        category_id = int(request.form["category"])
+    except ValueError:
+        category_id = None
     info = request.form["info"][:1000]
-    post_id = data.create_post(session["user_id"], item, info)
+    post_id = data.create_post(session["user_id"], item, category_id, info)
     flash("Ilmoitus luotu.")
     return redirect(f"/posts/{post_id}")
 
@@ -160,7 +165,16 @@ def edit_post_page(post_id):
     post = data.get_post(post_id)
     if not post:
         abort(404)
-    return render_template("editor.html", mode="edit", post=post, item_value=post["item"], info_value=post["info"])
+
+    categories = data.get_categories()
+    return render_template("editor.html",
+        mode="edit",
+        categories=categories,
+        post=post,
+        item_value=post["item"],
+        category_value=post["category"],
+        info_value=post["info"]
+    )
 
 
 @app.route("/do-edit-post/<int:post_id>", methods=["POST"])
@@ -174,8 +188,13 @@ def edit_post(post_id):
         abort(403)
     
     item = request.form["item"][:50]
+    try:
+        category_id = int(request.form["category"])
+    except ValueError:
+        category_id = None
+    print("CATEGORY IS IS", category_id)
     info = request.form["info"][:1000]
-    data.edit_post(post_id, item, info)
+    data.edit_post(post_id, item, category_id, info)
     flash("Muokkaus onnistui.")
     return redirect(f"/posts/{post_id}")
 
@@ -218,7 +237,7 @@ def add_reservation(post_id):
     end_date = date.fromisoformat(end_date_str)
 
     if start_date > end_date:
-        flash("Varauksen alkupäivä ei voi olla päättymispäivän jälkeen.")
+        flash("Varauksen alkupäivä ei voi olla päättymispäivän jälkeen.", "error")
         return redirect(f"/posts/{post_id}")
 
     reservations = data.get_post_reservations(post_id, start_date_str, end_date_str)

@@ -17,12 +17,16 @@
 <thead>
     <tr>
         <th>Lainattava asia</th>
+        <th>Luokka</th>
     </tr>
 </thead>
 {% for post in posts %}
     <tr>
         <td>
            <a href="/posts/{{ post.id }}">{{ post.item }}</a>
+        </td>
+        <td>
+            {{ post.category_name or "Ei luokkaa"}}
         </td>
     </tr>
 {% endfor %}

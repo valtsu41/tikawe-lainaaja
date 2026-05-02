@@ -12,10 +12,9 @@ def get_conn() -> sqlite3.Connection:
     return conn
 
 
-def init_db():
+def execute_script(script: str):
     conn = get_conn()
-    with open("schema.sql") as f:
-        conn.executescript(f.read())
+    conn.executescript(script)
     conn.commit()
     conn.close()
 

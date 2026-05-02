@@ -54,17 +54,29 @@ def get_user_reservation_count(user_id: int):
 
 
 def get_user_posts(user_id: int):
-    res = db.query("SELECT id, item FROM Posts WHERE author = ?", [user_id])
+    res = db.query("""
+        SELECT P.id id, P.item item, C.name category_name
+        FROM Posts P LEFT JOIN Categories C ON P.category = C.id
+        WHERE author = ?
+    """, [user_id])
     return res
 
+
+# Category functions
+
+def get_categories():
+    res = db.query("SELECT id, name FROM Categories")
+    return res
 
 
 # Post functions 
 
 def get_post(post_id: int):
     res = db.query("""
-        SELECT P.id AS id,   U.id AS author, U.username As author_name, P.item AS item, P.info AS info
-        FROM Posts AS P JOIN Users AS U ON P.author = U.id
+        SELECT P.id id, U.id author, U.username author_name, C.id category, C.name category_name, P.item item, P.info info
+        FROM Posts P 
+            LEFT JOIN Users U ON P.author = U.id
+            LEFT JOIN Categories C ON P.category = C.id
         WHERE P.id = ?
     """, [post_id])
     if not res:
@@ -76,18 +88,27 @@ def get_post(post_id: int):
 def search_posts(query: str):
     sql_query = f"%{query}%"
     return db.query("""
-        SELECT P.id AS id, U.id AS author, U.username AS author_name, P.item AS item
-        FROM Posts AS P JOIN Users AS U ON P.author = U.id
+        SELECT P.id id, U.id author, U.username author_name, C.id category, C.name category_name, P.item item
+        FROM Posts P 
+            LEFT JOIN Users U ON P.author = U.id
+            LEFT JOIN Categories C ON P.category = C.id
         WHERE P.item LIKE ?
     """, [sql_query])
 
 
-def create_post(author_id: int, item: str, info: str):
-    return db.execute("INSERT INTO Posts (author, item, info) VALUES (?, ?, ?)", [author_id, item, info])
+def create_post(author_id: int, item: str, category_id: int | None, info: str):
+    return db.execute("""
+        INSERT INTO Posts (author, item, category, info)
+        VALUES (?, ?, ?, ?)
+    """, [author_id, item, category_id, info])
 
 
-def edit_post(post_id: int, item: str, info: str):
-    return db.execute("UPDATE Posts SET item = ?, info = ? WHERE id = ?", [item, info, post_id])
+def edit_post(post_id: int, item: str, category_id: int | None, info: str):
+    return db.execute("""
+        UPDATE Posts
+        SET item = ?, category = ?, info = ?
+        WHERE id = ?
+    """, [item, category_id, info, post_id])
 
 
 def remove_post(post_id: int):

@@ -22,6 +22,18 @@
             <input id="item_field" type="text" name="item" maxlength="50" required value="{{ item_value }}"/>
         </p>
         <p>
+            <label for="category_field">Luokka:</label><br/>
+            <select id="category_field" name="category">
+                <option value="none" {% if category_value is none %}selected{% endif %}>Ei luokkaa</option>
+                {% for category in categories %}
+                    <option 
+                        value="{{ category.id }}" 
+                        {% if category.id == category_value %}selected{% endif %}
+                    >{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
             <label for="info_field"> Lisätiedot</label>:<br/>
             <textarea id="info_field" name="info" maxlength="1000">{{ info_value }}</textarea>
         </p>

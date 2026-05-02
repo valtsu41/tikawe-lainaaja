@@ -16,13 +16,16 @@ class Shell(cmd.Cmd):
         return True
 
     def do_init(self, arg):
-        "Creates the database file and initializes the database with the schema."
+        "Creates the database file and initializes the database with the schema and categories."
         if os.path.exists(db.DB_PATH):
             print(f"The database file ({db.DB_PATH}) location already exists.")
             return
         print("Initializing...")
         try:
-            db.init_db()
+            with open("schema.sql", encoding="utf-8") as f:
+                db.execute_script(f.read())
+            with open("init.sql", encoding="utf-8") as f:
+                db.execute_script(f.read())
         except Exception as e:
             print("Initialization failed with error:", e)
             return
