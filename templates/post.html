@@ -1,20 +1,20 @@
 {% extends "layout.html" %}
 
-{% block title %}Ilmoitus - {{ post["item"] }}{% endblock %}
+{% block title %}Ilmoitus - {{ post.item }}{% endblock %}
 
 {% block content %}
-<h2>{{ post["item"] }}</h2>
+<h2>{{ post.item }}</h2>
 
-{% if post["author"] == session.user_id %}
-    <a href="/edit-post/{{ post['id'] }}">Muokkaa</a>
+{% if post.author == session.user_id %}
+    <a href="/edit-post/{{ post.id }}">Muokkaa</a>
     <span> | </span>
-    <a href="/remove-post/{{ post['id'] }}">Poista</a>
+    <a href="/remove-post/{{ post.id }}">Poista</a>
 {% endif %}
 
 <h3>Lainaaja</h3>
-<p><a href="/users/{{ post.author }}">{{ post["author_name"] }}</a></p>
+<p><a href="/users/{{ post.author }}">{{ post.author_name }}</a></p>
 <h3>Lisätiedot</h3>
-<p>{{ post["info"] }}</p>
+<p>{{ post.info }}</p>
 
 <p><small>{{ view_count }} käyttäjää on katsonut tätä.</small></p>
 
