@@ -63,6 +63,9 @@ def do_register():
 
 @app.route("/login")
 def login():
+    if "user_id" in session:
+        flash(f"Olet jo kirjautunut sisään käyttäjällä {session['username']}.")
+        return redirect("/")
     return render_template("login.html")
 
 

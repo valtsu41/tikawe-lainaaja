@@ -4,12 +4,6 @@
 
 {% block content %}
 <h1>Kirjaudu</h1>
-{% if session.user_id %}
-<p>
-    Olet jo kirjautunut sisään käyttäjällä {{ session.username }}
-</p>
-<a href="/logout">Kirjaudu ulos</a>
-{% else %}
 <form action="/do-login" method="post">
     <p>
         <label for="username_field">Käyttäjänimi</label>:<br/>
@@ -21,5 +15,4 @@
     </p>
     <input type="submit" value="Kirjaudu"/>
 </form>
-{% endif %}
 {% endblock %}
