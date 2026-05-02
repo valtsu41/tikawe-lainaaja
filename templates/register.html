@@ -5,18 +5,18 @@
 {% block content %}
 <h2>Rekisteröidy</h2>
 <form action="/do-register" method="post">
-  <p>
-    <label for="username_field">Käyttäjänimi</label>:<br/>
-    <input id="username_field" type="text" name="username" maxlength="20" required/>
-  </p>
-  <p>
-    <label for="password_field">Salasana</label>:<br/>
-    <input id="password_field" type="password" name="password1" required/>
-  </p>
-  <p>
-    <label for="password2_field">Salasana uudestaan</label>:<br/>
-    <input id="password2_field" type="password" name="password2" required/>
-  </p>
-  <input type="submit" value="Luo käyttäjä"/>
+    <p>
+        <label for="username_field">Käyttäjänimi</label>:<br/>
+        <input id="username_field" type="text" name="username" maxlength="20" required/>
+    </p>
+    <p>
+        <label for="password_field">Salasana</label>:<br/>
+        <input id="password_field" type="password" name="password1" required/>
+    </p>
+    <p>
+        <label for="password2_field">Salasana uudestaan</label>:<br/>
+        <input id="password2_field" type="password" name="password2" required/>
+    </p>
+    <input type="submit" value="Luo käyttäjä"/>
 </form>
 {% endblock %}

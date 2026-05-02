@@ -16,11 +16,11 @@
                 <li><a href="/">Etusivu</a></li>
                 <li><a href="/posts">Ilmoitukset</a></li>
                 {% if session.user_id %}
-                <li><a href="/users/{{ session.user_id }}">Omat tiedot ({{ session.username }})</a></li>
-                <li><a href="/logout">Kirjaudu ulos</a></li>
+                    <li><a href="/users/{{ session.user_id }}">Omat tiedot ({{ session.username }})</a></li>
+                    <li><a href="/logout">Kirjaudu ulos</a></li>
                 {% else %}
-                <li><a href="/register">Rekisteröidy</a></li>
-                <li><a href="/login">Kirjaudu sisään</a></li>
+                    <li><a href="/register">Rekisteröidy</a></li>
+                    <li><a href="/login">Kirjaudu sisään</a></li>
                 {% endif %}
             </ul>
         </nav>
@@ -28,10 +28,10 @@
     <hr/>
     <div class="flash">
         {% for message in get_flashed_messages() %}
-        <p>
-            <strong>{{ message }}</strong>
-        </p>
-        <hr/>
+            <p>
+                <strong>{{ message }}</strong>
+            </p>
+            <hr/>
         {% endfor %}
     </div>
     <div class="content">
