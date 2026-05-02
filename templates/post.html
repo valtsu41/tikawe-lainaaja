@@ -4,18 +4,19 @@
 
 {% block content %}
 <h2>{{ post["item"] }}</h2>
+
+{% if post["author"] == session.user_id %}
+    <a href="/edit-post/{{ post['id'] }}">Muokkaa</a>
+    <span> | </span>
+    <a href="/remove-post/{{ post['id'] }}">Poista</a>
+{% endif %}
+
 <h3>Lainaaja</h3>
 <p><a href="/users/{{ post.author }}">{{ post["author_name"] }}</a></p>
 <h3>Lisätiedot</h3>
 <p>{{ post["info"] }}</p>
 
-<p>{{ view_count }} käyttäjää on katsonut tätä.</p>
-
-{% if post["author"] == session.user_id %}
-<a href="/edit-post/{{ post['id'] }}">Muokkaa</a>
-<span> | </span>
-<a href="/remove-post/{{ post['id'] }}">Poista</a>
-{% endif %}
+<p><small>{{ view_count }} käyttäjää on katsonut tätä.</small></p>
 
 <hr>
 
@@ -31,9 +32,9 @@
     <table>
         <thead>
             <tr>
-                <td>Alkupäivä</td>
-                <td>Loppupäivä</td>
-                <td>Varaaja</td>
+                <th>Alkupäivä</th>
+                <th>Loppupäivä</th>
+                <th>Varaaja</th>
             </tr>
         </thead>
         {% for reservation in reservations %}

@@ -4,20 +4,19 @@
 
 {% block content %}
 <h2>Käyttäjä {{ user.username }}</h2>
-<hr>
 <h3>Käyttäjän tilastot</h3>
 <dl>
     <dt>Aktiivisia ilmoituksia</dt>
-    <dl>{{ post_count }}</dl>
+    <dd>{{ post_count }}</dd>
 
     <dt>Varauksia tehty</dt>
-    <dl>{{ reservation_count }}</dl>
+    <dd>{{ reservation_count }}</dd>
 </dl>
 <h3>Käyttäjän ilmoitukset</h3>
 <table>
 <thead>
     <tr>
-        <td>Lainattava asia</td>
+        <th>Lainattava asia</th>
     </tr>
 </thead>
 {% for post in posts %}

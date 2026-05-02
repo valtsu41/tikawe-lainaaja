@@ -3,29 +3,28 @@
 
 <head>
     <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/main.css"/>
 </head>
 
 <body>
-    <div class="header">
+    <header>
         <h1>Lainaaja</h1>
-    </div>
-    <hr/>
-    <div class="nav">
-        <nav>
-            <ul>
-                <li><a href="/">Etusivu</a></li>
-                <li><a href="/posts">Ilmoitukset</a></li>
-                {% if session.user_id %}
-                    <li><a href="/users/{{ session.user_id }}">Omat tiedot ({{ session.username }})</a></li>
-                    <li><a href="/logout">Kirjaudu ulos</a></li>
-                {% else %}
-                    <li><a href="/register">Rekisteröidy</a></li>
-                    <li><a href="/login">Kirjaudu sisään</a></li>
-                {% endif %}
-            </ul>
-        </nav>
-    </div>
-    <hr/>
+        <div class="nav">
+            <nav>
+                <ul>
+                    <li><a href="/">Etusivu</a></li>
+                    <li><a href="/posts">Ilmoitukset</a></li>
+                    {% if session.user_id %}
+                        <li><a href="/users/{{ session.user_id }}">Omat tiedot ({{ session.username }})</a></li>
+                        <li><a href="/logout">Kirjaudu ulos</a></li>
+                    {% else %}
+                        <li><a href="/register">Rekisteröidy</a></li>
+                        <li><a href="/login">Kirjaudu sisään</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
     <div class="flash">
         {% for message in get_flashed_messages() %}
             <p>
