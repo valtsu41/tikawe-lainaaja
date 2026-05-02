@@ -35,16 +35,34 @@ nav li:not(:last-of-type) {
   border-right: 1px solid black;
 }
 
+#flashes p {
+    padding: 0.67em;
+}
+
+.message-flash, .info-flash {
+    background-color: lightblue ;
+}
+
+.warning-flash {
+    background-color: lightyellow;
+}
+
+.error-flash {
+    background-color: salmon;
+}
+
 table {
     width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 0.5em 2em;
+    border-bottom: 1px solid black;
 }
 
 th {
     background-color: gray;
-}
-
-th, td {
-    padding: 0.5em 1em;
 }
 
 tr:nth-child(even) {
