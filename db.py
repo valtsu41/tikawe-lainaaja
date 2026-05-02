@@ -14,24 +14,30 @@ def get_conn() -> sqlite3.Connection:
 
 def execute_script(script: str):
     conn = get_conn()
-    conn.executescript(script)
-    conn.commit()
-    conn.close()
+    try:
+        conn.executescript(script)
+        conn.commit()
+    finally:
+        conn.close()
 
 
 def execute(sql: str, params: dict | Sequence = ()) -> int | None:
     """Execute a command and return the last row id."""
     conn = get_conn()
-    res = conn.execute(sql, params)
-    conn.commit()
-    rowid = res.lastrowid
-    conn.close()
+    try:
+        res = conn.execute(sql, params)
+        conn.commit()
+        rowid = res.lastrowid
+    finally:
+        conn.close()
     return rowid
 
 
 def query(sql: str, params: dict | Sequence = ()) -> list:
     """Execute a command and fetch all results."""
     conn = get_conn()
-    res = conn.execute(sql, params).fetchall()
-    conn.close()
+    try:
+        res = conn.execute(sql, params).fetchall()
+    finally:
+        conn.close()
     return res
