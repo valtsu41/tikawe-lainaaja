@@ -1,7 +1,9 @@
 from collections.abc import Sequence
 import sqlite3
 
+
 DB_PATH = "database.db"
+
 
 def get_conn() -> sqlite3.Connection:
     conn = sqlite3.connect(DB_PATH)
@@ -12,13 +14,14 @@ def get_conn() -> sqlite3.Connection:
 
 def init_db():
     conn = get_conn()
-    with open("schema.sql",) as f:
+    with open("schema.sql") as f:
         conn.executescript(f.read())
     conn.commit()
     conn.close()
 
-# Execute a command and return the last row id
+
 def execute(sql: str, params: dict | Sequence = ()) -> int | None:
+    """Execute a command and return the last row id."""
     conn = get_conn()
     res = conn.execute(sql, params)
     conn.commit()
@@ -28,6 +31,7 @@ def execute(sql: str, params: dict | Sequence = ()) -> int | None:
 
 
 def query(sql: str, params: dict | Sequence = ()) -> list:
+    """Execute a command and fetch all results."""
     conn = get_conn()
     res = conn.execute(sql, params).fetchall()
     conn.close()

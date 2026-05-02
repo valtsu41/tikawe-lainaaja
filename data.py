@@ -107,6 +107,7 @@ def get_post_viewer_count(post_id: int):
 
 
 # Reservation functions
+
 def get_reservation(reservation_id: int):
     res = db.query("""
         SELECT R.id id, R.post post, R.user user_id, U.username username, R.start_date start_date, R.end_date end_date
@@ -117,7 +118,7 @@ def get_reservation(reservation_id: int):
         return None
     else:
         return res[0]
-                    
+              
 
 def get_post_reservations(post_id: int, start_date: str = "", end_date: str = ""):
     if start_date and end_date:
@@ -148,6 +149,7 @@ def add_reservation(post_id: int, user_id: int, start_date: str, end_date: str):
         "INSERT INTO Reservations (post, user, start_date, end_date) VALUES (?, ?, ?, ?)",
         [post_id, user_id, start_date, end_date]
     )
+
 
 def remove_reservation(reservation_id: int):
     db.execute("DELETE FROM Reservations WHERE id = ?", [reservation_id])

@@ -3,6 +3,7 @@ import os, os.path
 
 import db
 
+
 class Shell(cmd.Cmd):
     intro = "Welcome to the tikawe-lainaaja database maintenance tool\nFor a list of commands, type '?' or 'help'\n"
     prompt = "(db_admin) "

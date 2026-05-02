@@ -4,9 +4,10 @@ from functools import wraps
 
 from flask import Flask, session, request, render_template, redirect, abort, flash
 
-import config
 import data
 
+
+# Utility decorators
 
 def check_csrf(f):
     @wraps(f)
@@ -27,8 +28,12 @@ def require_login(f):
             return f(*args, **kwargs)
     return wrapper
 
+
+# App definition
+
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
+
 
 
 @app.route("/")
@@ -37,6 +42,8 @@ def index():
     visit_count = data.get_visit_count()
     return render_template("index.html", visit_count=visit_count)
 
+
+# Login and user handling
 
 @app.route("/register")
 def register():
@@ -91,6 +98,8 @@ def logout():
     return redirect("/")
 
 
+# User pages
+
 @app.route("/users/<int:user_id>")
 def user_page(user_id):
     user = data.get_user(user_id)
@@ -102,6 +111,8 @@ def user_page(user_id):
     posts = data.get_user_posts(user_id)
     return render_template("user.html", user=user, post_count=post_count, reservation_count=reservation_count, posts=posts)
 
+
+# Post handling
 
 @app.route("/posts")
 def posts():
@@ -195,6 +206,8 @@ def remove_post(post_id):
         return redirect(f"/posts/{post_id}")
     
 
+# Reservation handling
+
 @app.route("/do-add-reservation/<int:post_id>", methods=["POST"])
 @require_login
 def add_reservation(post_id):
@@ -236,6 +249,7 @@ def remove_reservation(reservation_id):
         abort(404)
     if reservation["user_id"] != session["user_id"]:
         abort(403)
+    
     if "continue" in request.form:
         data.remove_reservation(reservation_id)
     
